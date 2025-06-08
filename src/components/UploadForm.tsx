@@ -1,5 +1,6 @@
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
+import { extractMetadata } from "../services/api";
 import DataDisplay from "../components/DataDisplay";
 
 export default function UploadForm() {
@@ -9,37 +10,26 @@ export default function UploadForm() {
   const [success, setSuccess] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!selectedFile) {
-      setError("Please select a file.");
-      return;
-    }
+  if (!selectedFile) {
+    setError("Please select a file.");
+    return;
+  }
 
-    try {
-      setError(null);
-      setSuccess(false);
+  try {
+    setError(null);
+    setSuccess(false);
+    setMetadata(null);
 
-      const formData = new FormData();
-      formData.append("file", selectedFile);
+    const data = await extractMetadata(selectedFile); // ✅ Use the service
+    setMetadata(data);
+    setSuccess(true);
+  } catch (err) {
+    setError((err as Error).message);
+  }
+};
 
-      const response = await fetch(import.meta.env.VITE_API_URL + "/extract", {
-        method: "POST",
-        body: formData,
-      });
-
-
-      if (!response.ok) throw new Error("Upload failed");
-
-      const json = await response.json();     
-      setMetadata(json);  
-
-      setSuccess(true);
-    } catch (err) {
-      setError((err as Error).message);
-    }
-    
-  };
 
   return (
     <Container fluid className="d-flex flex-column" style={{ minHeight: "100vh" }}>
