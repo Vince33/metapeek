@@ -48,7 +48,6 @@ export default function UploadForm() {
 
 };
 
-
   return (
     <Container fluid className="d-flex flex-column" style={{ minHeight: "100vh" }}>
       <Row className="flex-grow-1 justify-content-center align-items-center">
