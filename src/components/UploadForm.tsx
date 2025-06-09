@@ -2,12 +2,17 @@ import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { extractMetadata } from "../services/api";
 import DataDisplay from "../components/DataDisplay";
+import type { Metadata } from "../types/metadata";
+import { useRef } from "react";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 export default function UploadForm() {
-  const [metadata, setMetadata] = useState<any | null>(null);
+  const [metadata, setMetadata] = useState<Metadata | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [showToast, setShowToast] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -19,17 +24,29 @@ export default function UploadForm() {
 
   try {
     setError(null);
-    setSuccess(false);
     setMetadata(null);
-
-    const data = await extractMetadata(selectedFile); // ✅ Use the service
+    setLoading(true);
+    
+    const data = await extractMetadata(selectedFile); // ✅ already throws on failure
     setMetadata(data);
-    setSuccess(true);
-  } catch (err) {
-    setError((err as Error).message);
-  }
-};
+    
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+    
+    // Reset file input
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+} catch (err) {
+    const errorMessage =
+     err instanceof Error ? err.message : "Something went wrong during upload.";
+    setError(errorMessage);
+} finally {
+  setLoading(false);
+}
 
+};
 
   return (
     <Container fluid className="d-flex flex-column" style={{ minHeight: "100vh" }}>
@@ -38,7 +55,15 @@ export default function UploadForm() {
           <h2 className="mb-4 text-center">Upload a Video</h2>
 
           {error && <Alert variant="danger">{error}</Alert>}
-          {success && <Alert variant="success">Upload successful!</Alert>}
+          {/* {success && <Alert variant="success">Upload successful!</Alert>} */}
+          <ToastContainer position="top-center" className="mt-4">
+            <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg="success">
+              <Toast.Header>
+                <strong className="me-auto">Success</strong>
+              </Toast.Header>
+              <Toast.Body>Upload successful!</Toast.Body>
+            </Toast>
+          </ToastContainer>
 
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formFile">
@@ -46,14 +71,27 @@ export default function UploadForm() {
               <Form.Control
                 type="file"
                 accept="video/*"
+                ref={fileInputRef}
                 onChange={(e) => {
+                  // setSuccess(false);
+                  setError(null);
                   const fileInput = e.target as HTMLInputElement;
                   setSelectedFile(fileInput.files?.[0] || null);
                 }}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100">
-              Upload
+            <Button 
+              variant="primary" 
+              type="submit" 
+              className="w-100"
+              disabled={loading} >{loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" />
+                  Uploading...
+                </>
+                ) : (
+                  "Upload"
+                )}
             </Button>
           </Form>
           {metadata && <DataDisplay data={metadata} />}
