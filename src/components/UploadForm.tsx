@@ -55,7 +55,6 @@ export default function UploadForm() {
           <h2 className="mb-4 text-center">Upload a Video</h2>
 
           {error && <Alert variant="danger">{error}</Alert>}
-          {/* {success && <Alert variant="success">Upload successful!</Alert>} */}
           <ToastContainer position="top-center" className="mt-4">
             <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide bg="success">
               <Toast.Header>
@@ -93,6 +92,23 @@ export default function UploadForm() {
                   "Upload"
                 )}
             </Button>
+            <Button
+                variant="secondary"
+                type="button"
+                className="w-100 mt-2"
+                onClick={() => {
+                  setSelectedFile(null);
+                  setMetadata(null);
+                  setError(null);
+                  setShowToast(false);
+                  if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                  }
+                }
+              }
+            >
+                Clear
+              </Button>
           </Form>
           {metadata && <DataDisplay data={metadata} />}
         </Col>
