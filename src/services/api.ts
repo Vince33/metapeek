@@ -9,6 +9,10 @@ export async function extractMetadata(file: File): Promise<any> {
     body: formData,
   });
 
+  if (response.status === 413) {
+    throw new Error("The uploaded file is too large.");
+  }
+  
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.error || "Failed to extract metadata");
