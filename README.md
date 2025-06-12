@@ -54,25 +54,29 @@ http://localhost:5173/
 ```
 ### ⚠ The Go backend must be running separately for full functionality.
 
-# 🔬 End-to-End Testing (Playwright)
+
+## 🔬 End-to-End Testing (Playwright)
+
 
 ### Running E2E tests
 ```
 npm run test:e2e
 ```
-#### - Playwright will automatically start the Vite dev server.
-#### - Tests live under: playwright/tests/
-#### - Fixtures (test files) live under: playwright/fixtures/
+ - Playwright will automatically start the Vite dev server.
+ - Tests live under: playwright/tests/
+ - Fixtures (test files) live under: playwright/fixtures/
+
 
 ### Debugging tests interactively
 ```
 npx playwright test --debug
 ```
-#### Highly recommend setting up your text editor or IDE for testing. For example playwright plugin with VScode. Your will also be able to run test from within the IDE test explorer. However this is beyond the scope of this setup as it is dev env dependent. 
+ Highly recommend setting up your text editor or IDE for testing. For example playwright plugin with VScode. This will also grant you the ability to run test from within the IDE test explorer. However this is beyond the scope of this setup as it is dev env dependent. 
 
-# 🧪 Test ID Strategy
-### - We use data-testid attributes on key DOM elements to stabilize E2E tests.
-### - This approach avoids brittle selectors tied to class names or layout structure.
+## 🧪 Test ID Strategy
+ - We use data-testid attributes on key DOM elements to stabilize E2E tests.
+ - This approach avoids brittle selectors tied to class names or layout structure.
+
 
 ### Example frontend usage:
 ```
@@ -86,12 +90,13 @@ npx playwright test --debug
 await expect(page.getByTestId('metadata-output')).toContainText('Duration');
 ```
 
-# 🎯 Fixtures Policy
-### - Test media files live under: playwright/fixtures/
-### - Fixtures should remain small (< 1MB) to avoid repository bloat.
-### - Future fixture management may evolve as project grows.
+## 🎯 Fixtures Policy
+ - Test media files live under: playwright/fixtures/
+ - Fixtures should remain small (< 1MB) to avoid repository bloat.
+ - Future fixture management may evolve as project grows.
 
-# 🏗 Project Structure
+## 🏗 Project Structure
+
 ```.
 ├── src/                   # Frontend React app source
 ├── playwright.config.ts   # Playwright E2E config (project root)
@@ -102,7 +107,8 @@ await expect(page.getByTestId('metadata-output')).toContainText('Duration');
 └── vite.config.ts         # Vite build config
 ```
 
-# 🚧 Known Requirements
-### - Running backend API (Go + ffprobe) must be active for full file upload flows.
-### - Backend is responsible for actual file size enforcement & metadata extraction.
-### - Max upload size currently set to 10 MiB at API level. ** This will adjust as project matures **
+## 🚧 Known Requirements
+ - Running backend API (Go + ffprobe) must be active for full file upload flows.
+ - Backend is responsible for actual file size enforcement & metadata extraction.
+ - Max upload size currently set to 10 MiB at API level. ** This will adjust as project matures **
+
