@@ -31,28 +31,28 @@ This frontend integrates with a Go-based API backend that handles metadata extra
 
 ## 🛠️ Setup Instructions
 
-### 1️⃣ Clone the repo
+ 1️⃣ Clone the repo
 
 ```bash
 git clone https://github.com/Vince33/metapeek.git
 cd metapeek
 ```
 
-### 2️⃣ Install dependencies
+ 2️⃣ Install dependencies
 ```
 npm install
 ```
 
-### 3️⃣ Start the frontend dev server
+ 3️⃣ Start the frontend dev server
 ```
 npm run dev
 ```
 
-### The app will be available at:
+ The app will be available at:
 ```
 http://localhost:5173/
 ```
-### ⚠ The Go backend must be running separately for full functionality.
+ ⚠ The Go backend must be running separately for full functionality.
 
 
 ## 🔬 End-to-End Testing (Playwright)
