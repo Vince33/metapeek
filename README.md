@@ -54,7 +54,9 @@ http://localhost:5173/
 ```
 ### ⚠ The Go backend must be running separately for full functionality.
 
+
 ## 🔬 End-to-End Testing (Playwright)
+
 
 ### Running E2E tests
 ```
@@ -63,6 +65,7 @@ npm run test:e2e
  - Playwright will automatically start the Vite dev server.
  - Tests live under: playwright/tests/
  - Fixtures (test files) live under: playwright/fixtures/
+
 
 ### Debugging tests interactively
 ```
@@ -73,6 +76,7 @@ npx playwright test --debug
 ## 🧪 Test ID Strategy
  - We use data-testid attributes on key DOM elements to stabilize E2E tests.
  - This approach avoids brittle selectors tied to class names or layout structure.
+
 
 ### Example frontend usage:
 ```
@@ -92,6 +96,7 @@ await expect(page.getByTestId('metadata-output')).toContainText('Duration');
  - Future fixture management may evolve as project grows.
 
 ## 🏗 Project Structure
+
 ```.
 ├── src/                   # Frontend React app source
 ├── playwright.config.ts   # Playwright E2E config (project root)
@@ -106,3 +111,4 @@ await expect(page.getByTestId('metadata-output')).toContainText('Duration');
  - Running backend API (Go + ffprobe) must be active for full file upload flows.
  - Backend is responsible for actual file size enforcement & metadata extraction.
  - Max upload size currently set to 10 MiB at API level. ** This will adjust as project matures **
+
