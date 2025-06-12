@@ -62,9 +62,11 @@ http://localhost:5173/
 ```
 npm run test:e2e
 ```
+Note:
  - Playwright will automatically start the Vite dev server.
  - Tests live under: playwright/tests/
  - Fixtures (test files) live under: playwright/fixtures/
+
 
 
 ### Debugging tests interactively
