@@ -27,7 +27,7 @@ export default function DataDisplay({ data }: Props) {
   return (
     <Card className="mt-4 shadow-sm">
       <Card.Header>Metadata</Card.Header>
-      <ListGroup variant="flush">
+      <ListGroup  variant="flush" data-testid="metadata-list" >
         <ListGroup.Item><strong>Filename:</strong> {format.filename}</ListGroup.Item>
         <ListGroup.Item><strong>Duration:</strong> {formatDuration(format.duration)}</ListGroup.Item>
         <ListGroup.Item><strong>Bitrate:</strong> {formatBitrate(format.bit_rate)}</ListGroup.Item>
