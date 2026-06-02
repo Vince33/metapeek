@@ -5,10 +5,44 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const mockMetadataResponse = {
+  format: {
+    filename: 'media/SampleVideo_1280x720_1mb.mp4',
+    format_name: 'mov,mp4,m4a,3gp,3g2,mj2',
+    duration: '5.312000'
+  },
+  streams: [
+    {
+      codec_name: 'h264',
+      codec_type: 'video',
+      width: 1280,
+      height: 720
+    },
+    {
+      codec_name: 'aac',
+      codec_type: 'audio',
+      channels: 6,
+      sample_rate: '48000'
+    }
+  ]
+};
+
+
 test('file upload extracts metadata', async ({ page }) => {
+    // In CI environments mock the API — locally runs as true E2E against the real Go API
+  if (process.env.CI) {
+    await page.route('**/extract', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(mockMetadataResponse)
+      });
+    });
+  }
+
   await page.goto('/'); // baseURL handles full path
 
-  const fileInput = await page.locator('input[type="file"]');
+  const fileInput = page.locator('input[type="file"]');
   const filePath = path.resolve(__dirname, '../fixtures/SampleVideo_1280x720_1mb.mp4');
 
   await fileInput.setInputFiles(filePath);
