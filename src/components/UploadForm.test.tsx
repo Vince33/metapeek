@@ -30,4 +30,20 @@ describe("UploadForm", () => {
         
         expect(await screen.findByText("Upload successful!")).toBeInTheDocument();
     });
+
+        it("shows fallback error message when a non-Error value is thrown", async () => {
+        // const mockMetadata = {format: {duration: "5.312000"}, streams:[]};
+        vi.mocked(extractMetadata).mockRejectedValue(("a string error"));
+
+        render(<UploadForm />);
+
+        const file  = new File(["fake video content"], "test.mp4", { type: "video/mp4" });
+        const fileInput = screen.getByLabelText("Choose a video file");
+        await userEvent.upload(fileInput, file);
+
+        const uploadButton = screen.getByText("Upload");
+        await userEvent.click(uploadButton);
+        
+        expect(await screen.findByText("Something went wrong during upload.")).toBeInTheDocument();
+    });
 });
