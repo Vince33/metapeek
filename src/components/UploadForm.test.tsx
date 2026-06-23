@@ -46,4 +46,20 @@ describe("UploadForm", () => {
         
         expect(await screen.findByText("Something went wrong during upload.")).toBeInTheDocument();
     });
+
+        it("shows the Error's message when a real Error is thrown", async () => {
+        // const mockMetadata = {format: {duration: "5.312000"}, streams:[]};
+        vi.mocked(extractMetadata).mockRejectedValue(new Error("Upload failed: file too large"));
+
+        render(<UploadForm />);
+
+        const file  = new File(["fake video content"], "test.mp4", { type: "video/mp4" });
+        const fileInput = screen.getByLabelText("Choose a video file");
+        await userEvent.upload(fileInput, file);
+
+        const uploadButton = screen.getByText("Upload");
+        await userEvent.click(uploadButton);
+        
+        expect(await screen.findByText("Upload failed: file too large")).toBeInTheDocument();
+    });
 });
