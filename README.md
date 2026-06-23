@@ -12,6 +12,7 @@ This frontend integrates with a Go-based API backend that handles metadata extra
 - Real-time JSON metadata display (duration, codec, dimensions, etc.)
 - Upload file size limits enforced via backend (currently 10 MiB max) --**will be adjusted as the project matures**--
 - Fully automated End-to-End (E2E) testing with Playwright
+- Component-level unit testing with Vitest and React Testing Library
 - Built with Vite, React, TypeScript, and Bootstrap 5
 
 ---
@@ -24,7 +25,7 @@ This frontend integrates with a Go-based API backend that handles metadata extra
 | Build System | Vite |
 | Styling | Bootstrap 5 |
 | Language | TypeScript |
-| Testing | Playwright (E2E) |
+| Testing | Playwright (E2E), Vitest + React Testing Library (unit) |
 | Backend | Go (FFmpeg/ffprobe extraction API - separate repo) |
 
 ---
@@ -75,6 +76,31 @@ npx playwright test --debug
 ```
  Highly recommend setting up your text editor or IDE for testing. For example playwright plugin with VScode. This will also grant you the ability to run test from within the IDE test explorer. However this is beyond the scope of this setup as it is dev env dependent. 
 
+## 🧪 Unit Testing (Vitest + React Testing Library)
+
+Component-level unit tests cover `UploadForm`'s core logic — no file
+selected, successful upload, and both branches of error handling — without
+requiring a browser or a running backend. The `extractMetadata` API call is
+mocked at the module level, so these tests run in well under a second.
+
+This is a deliberately different layer from the Playwright E2E suite: unit
+tests verify the frontend's own decision logic in isolation, while E2E tests
+verify the frontend and the real Go backend work correctly together.
+
+### Running unit tests
+```
+npm run test:unit
+```
+
+### Running with coverage
+```
+npx vitest run --coverage
+```
+
+Note:
+ - Test files live alongside the components they test, using a `.test.tsx` suffix (e.g. `src/components/UploadForm.test.tsx`).
+ - The `extractMetadata` API module is mocked in these tests; it is intentionally not exercised here. Real API behavior is covered by the Playwright E2E suite instead.
+
 ## 🧪 Test ID Strategy
  - We use data-testid attributes on key DOM elements to stabilize E2E tests.
  - This approach avoids brittle selectors tied to class names or layout structure.
@@ -101,16 +127,16 @@ await expect(page.getByTestId('metadata-output')).toContainText('Duration');
 
 ```.
 ├── src/                   # Frontend React app source
+│   └── components/        # React components, with co-located .test.tsx unit tests
 ├── playwright.config.ts   # Playwright E2E config (project root)
 ├── playwright/
 │   ├── tests/             # Playwright E2E tests
 │   └── fixtures/          # Test media files
 ├── package.json           # Project dependencies & scripts
-└── vite.config.ts         # Vite build config
+└── vite.config.ts         # Vite build config (includes Vitest config)
 ```
 
 ## 🚧 Known Requirements
  - Running backend API (Go + ffprobe) must be active for full file upload flows.
  - Backend is responsible for actual file size enforcement & metadata extraction.
  - Max upload size currently set to 10 MiB at API level. ** This will adjust as project matures **
-
