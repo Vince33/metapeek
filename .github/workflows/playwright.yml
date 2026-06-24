@@ -11,8 +11,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout frontend code
         uses: actions/checkout@v4
+
+      - name: Checkout backend repo
+        uses: actions/checkout@v4
+        with:
+          repository: Vince33/media-metadata-api
+          path: backend
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -20,16 +26,28 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install frontend dependencies
         run: npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
+      - name: Start backend server
+        working-directory: backend
+        run: |
+          go run main.go &
+          npx wait-on http://localhost:8080/extract --timeout 30000 || true
+
       - name: Run Playwright tests
         run: npm run test:e2e
-        env:
-          CI: true
 
       - name: Upload test results on failure
         if: failure()
