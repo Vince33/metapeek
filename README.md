@@ -79,9 +79,10 @@ npx playwright test --debug
 ## 🧪 Unit Testing (Vitest + React Testing Library)
 
 Component-level unit tests cover `UploadForm`'s core logic — no file
-selected, successful upload, and both branches of error handling — without
-requiring a browser or a running backend. The `extractMetadata` API call is
-mocked at the module level, so these tests run in well under a second.
+selected, successful upload, both branches of error handling, and the
+Clear button's reset behavior — without requiring a browser or a
+running backend. The `extractMetadata` API call is mocked at the module
+level, so these tests run in well under a second.
 
 This is a deliberately different layer from the Playwright E2E suite: unit
 tests verify the frontend's own decision logic in isolation, while E2E tests

@@ -62,4 +62,33 @@ describe("UploadForm", () => {
         
         expect(await screen.findByText("Upload failed: file too large")).toBeInTheDocument();
     });
+
+    it("clear button clears file after being chosen", async () =>{
+        render(<UploadForm />);
+        const file  = new File(["fake video content"], "test.mp4", { type: "video/mp4" });
+        const fileInput = screen.getByLabelText("Choose a video file") as HTMLInputElement;
+        await userEvent.upload(fileInput,file);
+
+        expect(fileInput.files?.[0]).toBeDefined();
+        expect(fileInput.files?.[0].name).toBe("test.mp4");
+
+        const clearButton = screen.getByText("Clear");
+        await userEvent.click(clearButton);
+        expect(fileInput.files?.length).toBe(0);
+
+    })
+
+    it("clear button clears no file selected error", async () => {
+        render(<UploadForm />);
+
+        const uploadButton = screen.getByText("Upload");
+        await userEvent.click(uploadButton);
+
+        expect(screen.getByText("Please select a file.")).toBeInTheDocument();
+        
+        const clearButton = screen.getByText("Clear");
+        await userEvent.click(clearButton);
+        expect(screen.queryByText("Please select a file.")).not.toBeInTheDocument();
+
+    })
 });
