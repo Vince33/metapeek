@@ -65,8 +65,14 @@ npm run test:e2e
 ```
 Note:
  - Playwright will automatically start the Vite dev server.
- - Tests live under: playwright/tests/
+ - Tests are organized by page/feature, then by purpose within that page
+   (e.g. `playwright/tests/upload/happy-path.spec.ts` and
+   `playwright/tests/upload/validation.spec.ts`).
  - Fixtures (test files) live under: playwright/fixtures/
+ - In CI, the real Go backend (media-metadata-api) is checked out and
+   started alongside the frontend — these are true end-to-end tests
+   against the real backend in both local and CI environments, not mocked
+   API responses.
 
 
 
@@ -131,7 +137,10 @@ await expect(page.getByTestId('metadata-output')).toContainText('Duration');
 │   └── components/        # React components, with co-located .test.tsx unit tests
 ├── playwright.config.ts   # Playwright E2E config (project root)
 ├── playwright/
-│   ├── tests/             # Playwright E2E tests
+│   ├── tests/
+│   │   └── upload/        # Tests organized by page/feature, then by purpose
+│   │       ├── happy-path.spec.ts
+│   │       └── validation.spec.ts
 │   └── fixtures/          # Test media files
 ├── package.json           # Project dependencies & scripts
 └── vite.config.ts         # Vite build config (includes Vitest config)
